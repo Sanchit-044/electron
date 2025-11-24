@@ -10,6 +10,8 @@
 
 #include "base/command_line.h"
 #include "base/files/file_path.h"
+#include "base/functional/bind.h"
+#include "base/logging.h"
 #include "base/notimplemented.h"
 #include "base/path_service.h"
 #include "chrome/browser/browser_process.h"
@@ -454,7 +456,7 @@ void BrowserProcessImpl::CreateOSCryptAsync() {
   // as a fallback.
   providers.emplace_back(
       /*precedence=*/5u, std::make_unique<os_crypt_async::PosixKeyProvider>());
-#endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC) && !BUILDFLAG(IS_LINUX)
+#endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
 
 #if BUILDFLAG(IS_MAC)
   if (base::FeatureList::IsEnabled(features::kUseKeychainKeyProvider)) {
@@ -466,7 +468,4 @@ void BrowserProcessImpl::CreateOSCryptAsync() {
 
   os_crypt_async_ =
       std::make_unique<os_crypt_async::OSCryptAsync>(std::move(providers));
-
-  // Trigger async initialization of OSCrypt key providers.
-  os_crypt_async_->GetInstance(base::DoNothing());
 }
