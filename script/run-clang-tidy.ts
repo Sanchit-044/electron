@@ -20,7 +20,7 @@ const LLVM_BIN = path.resolve(
   'Release+Asserts',
   'bin'
 );
-const PLATFORM = os.platform();
+const PLATFORM = process.env.TARGET_PLATFORM === 'win' ? 'win32' : os.platform();
 
 type SpawnAsyncResult = {
   stdout: string;
